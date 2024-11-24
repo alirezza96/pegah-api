@@ -1,9 +1,9 @@
 import { Router } from "express";
-import registerController from "../controllers/register";
-const router = Router()
+import {create} from "../controllers/register"
+const router: Router = Router()
 
 router.route("/")
-    .post(registerController)
+    .post(create)
 
 
 export default router

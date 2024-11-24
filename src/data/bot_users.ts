@@ -17,3 +17,17 @@ export const create = async (chatId: number, userId: number) => {
         throw new Error("error creating data")
     }
 }
+
+export const findById = async (chatId: number) => {
+    try {
+        const query = "select top 1 * from bot_users where chatId = @chatId"
+        const params = [
+            { name: "chatId", value: chatId, type: sql.BigInt() }
+        ]
+        const [user] = await executeQuery(query, params)
+        return user
+    } catch (error) {
+        console.error("error getting data =>", error)
+        throw new Error("error getting data")
+    }
+}

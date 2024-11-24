@@ -1,39 +1,30 @@
-import { Request, Response, NextFunction } from "express";
-import { findOneByChatId, findOneByPhoneNumber } from "../data/u_users";
-import { create } from "../data/bot_users";
-
-export default async function register(
-    req: Request<{}, {}, { chatId: number; phoneNumber: string }>,
-    res: Response,
-    next: NextFunction
-): Promise<void> {
+import { NextFunction, Request, Response } from "express";
+import { findOneByPhoneNumber } from "../data/u_users";
+import { IUser } from "../types/user";
+import { create as createBotUser, findById } from "../data/bot_users";
+export const create = async (req: Request<{}, {}, { phoneNumber: string }>, res: Response, next: NextFunction) => {
     try {
-        const { chatId, phoneNumber } = req.body;
-        if (!phoneNumber) {
-            const [user] = await findOneByChatId(chatId)
-            if (!user) {
-                res.status(404).json({ message: "user not found" });
-                return
-            }
-            if (user.raked) {
-                res.status(400).json({ message: "access denied" });
-                return
-            }
-            res.json({message: "logged in successfully", data: user})
+        const { phoneNumber } = req.body
+        const chatId = req.chatId
+
+        const user: IUser = await findOneByPhoneNumber(phoneNumber)
+        console.log(phoneNumber)
+        if (!user) {
+            res.status(404).json({ message: "کاربری یافت نشد 1" })
             return
         }
-        const [user] = await findOneByPhoneNumber(phoneNumber);
-        if (!user) {
-            res.status(404).json({ message: "user not found" });
-            return;
+        if (user.raked) {
+            res.status(400).json({ message: "حساب کاربری شما غیر فعال است." })
+            return
         }
-        if (user.raked === true) {
-            res.status(400).json({ message: "access denied" });
-            return;
+        const isUserExists = await findById(chatId)
+        if (isUserExists) {
+            res.status(400).json({ message: "حساب کاربری شما همواره ایجاد شده است." })
+            return
         }
-        const createUser = await create(chatId, user.code);
-        res.json({ message: "user created", data: createUser });
+        const newUser = await createBotUser(chatId, user.code)
+        res.json({ message: `${user.sharh} عزیز \n با موفقیت وارد شدید.`, data: newUser })
     } catch (error) {
-        next(error);
+        next(error)
     }
 }

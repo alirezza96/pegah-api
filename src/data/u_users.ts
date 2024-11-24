@@ -6,7 +6,7 @@ export const findOneByPhoneNumber = async (phoneNumber: string) => {
         const params = [
             { name: "phoneNumber", value: phoneNumber, type: sql.VarChar() }
         ]
-        const result = await executeQuery(query, params)
+        const [result] = await executeQuery(query, params)
         return result
     } catch (error) {
         console.error("error getting data =>", error)
@@ -14,13 +14,13 @@ export const findOneByPhoneNumber = async (phoneNumber: string) => {
     }
 }
 
-export const findOneByChatId = async (chatId: number) => {
+export const findById = async (userId: number) => {
     try {
-        const query = "select code, raked, sharh from u_users left outer join bot_users as bot on u_users.code = bot.userId where bot.chatId = @chatId"
+        const query = "select code, raked, sharh, loginname from u_users where code = @userId"
         const params = [
-            { name: "chatId", value: chatId, type: sql.BigInt() }
+            { name: "userId", value: userId, type: sql.Int() }
         ]
-        const result = await executeQuery(query, params)
+        const [result] = await executeQuery(query, params)
         return result
     } catch (error) {
         console.error("error getting data =>", error)
