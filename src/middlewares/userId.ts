@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { findById } from "../data/bot_users";
+import { findByChatId } from "../data/bot_users";
 import { findById as findByUserId } from "../data/u_users";
 import { IUser } from "../types/user";
 export default async function userId(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -13,7 +13,7 @@ export default async function userId(req: Request, res: Response, next: NextFunc
             req.chatId = chatId
             return next()
         }
-        const botUser = await findById(chatId)
+        const botUser = await findByChatId(chatId)
         if (!botUser) {
             res.status(404).json({ message: "کاربری یافت نشد" })
             return

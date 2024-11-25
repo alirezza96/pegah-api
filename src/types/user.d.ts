@@ -2,5 +2,6 @@ export interface IUser {
     code: number,
     raked: number,
     sharh: number,
-    loginname : string
+    loginname : string,
+    branch_no: number
 }

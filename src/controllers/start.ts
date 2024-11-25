@@ -7,7 +7,6 @@ export default async function start(
 ): Promise<void> {
     try {
         const user = req.user
-        console.log("user =>", user)
         // check u_users
         res.status(200).json({ message: `${user.sharh} عزیز \n با موفقیت وارد شدید.`, data: user })
         return

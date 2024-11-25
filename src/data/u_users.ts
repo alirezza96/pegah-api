@@ -2,7 +2,7 @@ import sql from "mssql"
 import { executeQuery } from "../utils/db"
 export const findOneByPhoneNumber = async (phoneNumber: string) => {
     try {
-        const query = "select code, raked, sharh from u_users where mobile = @phoneNumber"
+        const query = "select code, raked, sharh, 56 as branch_no from u_users where mobile = @phoneNumber"
         const params = [
             { name: "phoneNumber", value: phoneNumber, type: sql.VarChar() }
         ]

@@ -1,9 +1,10 @@
 import { Router } from "express";
-import { findById } from "../controllers/user";
+import { findById, updateStatus } from "../controllers/user";
 const router = Router()
 
 router.route("/")
     .get(findById)
+    .put(updateStatus)
 
 
 export default router
