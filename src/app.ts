@@ -6,6 +6,7 @@ import registerRouter from "./router/register";
 import startRouter from "./router/start";
 import userRouter from "./router/user";
 import userId from "./middlewares/userId";
+import reportRouter from "./router/report";
 
 const app = express()
 
@@ -17,6 +18,7 @@ app.use("/register", registerRouter)
 app.use("/start", startRouter)
 app.use("/commission", commissionRouter)
 app.use("/user" , userRouter)
+app.use("/report", reportRouter)
 
 
 //  middlewares
