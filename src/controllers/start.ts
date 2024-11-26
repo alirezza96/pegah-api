@@ -8,7 +8,7 @@ export default async function start(
     try {
         const user = req.user
         // check u_users
-        res.status(200).json({ message: `${user.sharh} عزیز \n با موفقیت وارد شدید.`, data: user })
+        res.status(200).json({ message: `سلام ${user.sharh}`, data: user })
         return
     } catch (error) {
         next(error);

@@ -26,11 +26,11 @@ export const create = async (req: Request<{}, {}, { phoneNumber: string }>, res:
             }
             // update chatId
             const updatedUser = await updateBotChatId(isUserExists.chatId, chatId)
-            res.json({ message: `${user.sharh} عزیز \n با موفقیت وارد شدید.`, data: updatedUser })
+            res.json({ message: `سلام ${user.sharh}`, data: updatedUser })
             return
         }
         const newUser = await createBotUser(chatId, user.code, user.branch_no)
-        res.json({ message: `${user.sharh} عزیز \n با موفقیت وارد شدید.`, data: newUser })
+        res.json({ message: `سلام ${user.sharh}`, data: newUser })
     } catch (error) {
         next(error)
     }
