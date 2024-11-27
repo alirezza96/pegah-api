@@ -42,7 +42,7 @@ pool.on("error", err => {
  * @returns {Promise<any>} - نتیجه کوئری
  */
 
-export const executeQuery = async (query: string, params: Array<{ name: string; type: sql.ISqlType; value: string | number }>) => {
+export const executeQuery = async (query: string, params: Array<{ name: string; type: sql.ISqlType; value: string | number | null }>) => {
     try {
         await initializePool()
         const request = pool.request()

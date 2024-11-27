@@ -1,32 +1,39 @@
 import { NextFunction, Request, Response } from "express";
-import { findByChatId } from "../data/bot_users";
-import { findById as findByUserId } from "../data/u_users";
-import { IUser } from "../types/user";
+import { findById } from "../data/bot_users";
 export default async function userId(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-        const chatId = Number(req.query.chatId)
-        if (isNaN(chatId)) {
-            res.status(400).json({ message: "chatId not valid" })
+        console.log("middleware userId fired")
+
+        const id = Number(req.query.id)
+        if (isNaN(id)) {
+            res.status(400).json({ message: "id not valid" })
             return
         }
-        if (req.originalUrl.startsWith("/register")) {
-            req.chatId = chatId
-            return next()
-        }
-        const botUser = await findByChatId(chatId)
-        if (!botUser) {
-            res.status(404).json({ message: "کاربری یافت نشد" })
+        const bot_user = await findById(id)
+        if (!bot_user) {
+            res.status(404).json({ message: "user not found" })
             return
         }
-        const user: IUser = await findByUserId(botUser.userId)
-        if (!user) {
-            res.status(400).json({ message: "حساب کاربری یافت نشد." })
-        }
-        if (user.raked) {
-            res.status(400).json({ message: "حساب کاربری شما غیر فعال است." })
+        console.log(1)
+        if (!bot_user.is_logged_in) {
+            res.status(400).json("user not logged in")
             return
         }
-        req.user = user
+        console.log(2)
+        if (!bot_user.auth_expired_date || bot_user.auth_expired_date <= new Date()) {
+            res.status(400).json("user auth expired")
+            return
+        }
+        console.log(3)
+        // const user: IUser = await findByUserId(botUser.userId)
+        // if (!user) {
+        //     res.status(400).json({ message: "حساب کاربری یافت نشد." })
+        // }
+        // if (user.raked) {
+        //     res.status(400).json({ message: "حساب کاربری شما غیر فعال است." })
+        //     return
+        // }
+        req.user = bot_user
         next()
     } catch (error: unknown) {
         next(error)

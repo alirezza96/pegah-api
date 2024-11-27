@@ -15,10 +15,10 @@ app.use(express.json())
 app.use(userId)
 // routes
 app.use("/register", registerRouter)
-app.use("/start", startRouter)
-app.use("/commission", commissionRouter)
-app.use("/user" , userRouter)
-app.use("/report", reportRouter)
+// app.use("/start", startRouter)
+// app.use("/commission", commissionRouter)
+// app.use("/user" , userRouter)
+// app.use("/report", reportRouter)
 
 
 //  middlewares

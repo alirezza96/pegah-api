@@ -1,16 +1,21 @@
+import { IBot } from "../types/bot"
 import { executeQuery } from "../utils/db"
 import sql from "mssql"
-import { BotStatus } from "../types/bot"
 
 
 
-export const create = async (chatId: number, userId: number, branchNo: number) => {
+export const createUser = async (user: IBot) => {
+    console.log("user =>", user)
+    const { id, first_name, last_name, username, userId, branch_no } = user
     try {
-        const query = "insert into bot_users(chatId, userId, branch_no) values(@chatId, @userId, @branchNo)"
+        const query = "insert into bot_users(id,first_name, last_name, username, userId, branch_no) values(@id, @first_name, @last_name, @username, @userId, @branch_no)"
         const params = [
-            { name: "chatId", value: chatId, type: sql.BigInt() },
+            { name: "id", value: id, type: sql.BigInt() },
+            { name: "first_name", value: first_name, type: sql.VarChar(30) },
+            { name: "last_name", value: last_name, type: sql.VarChar(30) },
+            { name: "username", value: username, type: sql.VarChar(50) },
             { name: "userId", value: userId, type: sql.SmallInt() },
-            { name: "branchNo", value: branchNo, type: sql.SmallInt() }
+            { name: "branch_no", value: branch_no, type: sql.SmallInt() }
         ]
         const result = await executeQuery(query, params)
         return result
@@ -20,11 +25,11 @@ export const create = async (chatId: number, userId: number, branchNo: number) =
     }
 }
 
-export const findByChatId = async (chatId: number) => {
+export const findById = async (id: number) => {
     try {
-        const query = "select top 1 * from bot_users where chatId = @chatId"
+        const query = "select top 1 * from bot_users where id = @id"
         const params = [
-            { name: "chatId", value: chatId, type: sql.BigInt() }
+            { name: "id", value: id, type: sql.BigInt() }
         ]
         const [user] = await executeQuery(query, params)
         return user
@@ -49,11 +54,11 @@ export const findByUserIdAndBranchNo = async (userId: number, branchNo: number) 
 }
 
 
-export const updateBotStatus = async (chatId: number, status: BotStatus): Promise<void> => {
+export const updateBotStatus = async (id: number, status: string): Promise<void> => {
     try {
-        const query = "update bot_users set status = @status where chatId = @chatId"
+        const query = "update bot_users set status = @status where id = @id"
         const params = [
-            { name: "chatId", value: chatId, type: sql.BigInt() },
+            { name: "id", value: id, type: sql.BigInt() },
             { name: "status", value: status, type: sql.VarChar() }
         ]
         const result = await executeQuery(query, params)
@@ -64,12 +69,12 @@ export const updateBotStatus = async (chatId: number, status: BotStatus): Promis
 }
 
 
-export const updateBotChatId = async (chatId: number, newChatId: number): Promise<void> => {
+export const updateBotid = async (id: number, newid: number): Promise<void> => {
     try {
-        const query = "update bot_users set chatId = @newChatId where chatId = @chatId"
+        const query = "update bot_users set id = @newid where id = @id"
         const params = [
-            { name: "chatId", value: chatId, type: sql.BigInt() },
-            { name: "newChatId", value: newChatId, type: sql.BigInt() }
+            { name: "id", value: id, type: sql.BigInt() },
+            { name: "newid", value: newid, type: sql.BigInt() }
 
         ]
         await executeQuery(query, params)

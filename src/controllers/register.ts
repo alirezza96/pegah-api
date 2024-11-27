@@ -1,36 +1,23 @@
 import { NextFunction, Request, Response } from "express";
 import { findOneByPhoneNumber } from "../data/u_users";
-import { IUser } from "../types/user";
-import { create as createBotUser, findByUserIdAndBranchNo, updateBotChatId } from "../data/bot_users";
-import { IBot } from "../types/bot";
-export const create = async (req: Request<{}, {}, { phoneNumber: string }>, res: Response, next: NextFunction) => {
+import { createUser } from "../data/bot_users";
+export const create = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { phoneNumber } = req.body
-        const chatId = req.chatId
-
-        const user: IUser = await findOneByPhoneNumber(phoneNumber)
-        console.log(phoneNumber)
+        console.log("registered fired")
+        const { id, first_name, last_name, username, phoneNumber } = req.body
+        // const user: IBot = await findById(body.id)
+        const user = await findOneByPhoneNumber(phoneNumber)
+        // find user on u_users
         if (!user) {
-            res.status(404).json({ message: "کاربری یافت نشد 1" })
+            res.status(404).json({ message: "user not found on table u_users" })
             return
         }
         if (user.raked) {
-            res.status(400).json({ message: "حساب کاربری شما غیر فعال است." })
+            res.status(400).json({ message: "user disabled on table u_users" })
             return
         }
-        const isUserExists: IBot = await findByUserIdAndBranchNo(user.code, user.branch_no)
-        if (isUserExists) {
-            if (isUserExists.chatId === chatId) {
-                res.status(400).json({ message: "حساب کاربری شما همواره ایجاد شده است." })
-                return
-            }
-            // update chatId
-            const updatedUser = await updateBotChatId(isUserExists.chatId, chatId)
-            res.json({ message: `سلام ${user.sharh}`, data: updatedUser })
-            return
-        }
-        const newUser = await createBotUser(chatId, user.code, user.branch_no)
-        res.json({ message: `سلام ${user.sharh}`, data: newUser })
+        await createUser({ id, first_name, last_name, username, userId: user.code, branch_no: user.branch_no })
+        res.json({ message: `verification code sms to ${phoneNumber}` })
     } catch (error) {
         next(error)
     }

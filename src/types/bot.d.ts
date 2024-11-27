@@ -1,12 +1,9 @@
-export enum BotStatus {
-    Member = "member",
-    Kick = "kicked"
-}
-
-
 export interface IBot {
-    chatId: number,
+    id: number,
     userId: number,
-    status: BotStatus,
-    branchNo: number
+    username: string | null
+    first_name: string
+    last_name: string | null
+    status?: string,
+    branch_no: number
 }

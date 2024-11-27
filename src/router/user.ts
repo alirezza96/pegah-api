@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { findById, updateStatus } from "../controllers/user";
+import {  getUser, updateStatus } from "../controllers/user";
 const router = Router()
 
 router.route("/")
-    .get(findById)
+    .get(getUser)
     .put(updateStatus)
 
 
